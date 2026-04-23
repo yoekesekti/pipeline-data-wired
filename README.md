@@ -33,13 +33,21 @@ Pipeline ini mengambil data artikel dari **Wired.com**, kemudian:
 
 ## Struktur Folder
 .
+
 ├── api/ # FastAPI service
+
 ├── dags/ # Airflow DAG
+
 ├── scraper/ # Script scraping
+
 ├── data/ # Hasil scraping (JSON)
+
 ├── sql/ # Query SQL & create table
+
 ├── docker-compose.yml # Setup PostgreSQL & Airflow
+
 ├── requirements.txt
+
 └── README.md
 
 ---
@@ -65,7 +73,7 @@ Output:
 ```bash
 data/wired_articles.json
 ```
-###3. Jalankan API
+### 3. Jalankan API
 ```bash
 uvicorn api.main:app --reload --port 8000
 ```
@@ -73,24 +81,19 @@ Endpoint:
 ``` bash
 http://127.0.0.1:8000/articles
 ```
-###4. Jalankan DAG Airflow
+### 4. Jalankan DAG Airflow
 Buka Airflow UI
 Aktifkan DAG: wired_pipeline_dag
 Klik tombol ▶ (Trigger DAG)
 
 Pipeline:
-
 fetch_articles → transform_articles → load_to_postgres
 
 ### Database
 
-Tabel yang digunakan:
+Tabel yang digunakan: wired_db
 
-wired_db
-
-Script pembuatan tabel:
-
-sql/create_table.sql
+Script pembuatan tabel: sql/create_table.sql
 
 ### Query Reporting
 1. Membersihkan Nama Author

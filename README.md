@@ -50,25 +50,30 @@ Pipeline ini mengambil data artikel dari **Wired.com**, kemudian:
 
 ```bash
 docker compose up -d
+```
 
-```akses airflow
+akses airflow
+``` bash
 http://localhost:8081
+```
 
 ### 2. Jalankan Scraping
+```bash
 python scraper/scrape_wired.py
-
+```
 Output:
-
+```bash
 data/wired_articles.json
-
-3. Jalankan API
+```
+###3. Jalankan API
+```bash
 uvicorn api.main:app --reload --port 8000
-
+```
 Endpoint:
-
+``` bash
 http://127.0.0.1:8000/articles
-
-4. Jalankan DAG Airflow
+```
+###4. Jalankan DAG Airflow
 Buka Airflow UI
 Aktifkan DAG: wired_pipeline_dag
 Klik tombol ▶ (Trigger DAG)
@@ -81,8 +86,34 @@ fetch_articles → transform_articles → load_to_postgres
 
 Tabel yang digunakan:
 
-wired_articles
+wired_db
 
 Script pembuatan tabel:
 
 sql/create_table.sql
+
+### Query Reporting
+1. Membersihkan Nama Author
+``` bash
+SELECT title, REGEXP_REPLACE(author, '^By\s+', '') AS clean_author
+FROM wired_db;
+```
+2. Top 3 Author Terbanyak
+```bash
+SELECT author, COUNT(*) AS total_articles
+FROM wired_db
+GROUP BY author
+ORDER BY total_articles DESC
+LIMIT 3;
+```
+3. Pencarian Keyword (AI, Climate, Security)
+``` bash
+SELECT *
+FROM wired_db
+WHERE title ILIKE '%AI%'
+   OR description ILIKE '%AI%'
+   OR title ILIKE '%Climate%'
+   OR description ILIKE '%Climate%'
+   OR title ILIKE '%Security%'
+   OR description ILIKE '%Security%';
+```
